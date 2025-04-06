@@ -1,0 +1,80 @@
+\documentclass[conference]{IEEEtran}
+
+\title{LLM-Assisted Constraint-Aware Pipeline (CAP) for Scalable and Optimized SFC Placement in Multi-Generation Networks}
+
+\author{
+	\IEEEauthorblockN{Author 1, Author 2, Author 3, Author 4}
+	\IEEEauthorblockA{Department of Computer Science, University Name, Country\\
+		Email: author1@example.com, author2@example.com, author3@example.com, author4@example.com}
+}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Related Work}
+	
+	Service Function Chaining (SFC) placement has been a critical research area in the domain of next-generation networks, particularly in the context of 5G and beyond. In existing techniques and research, the focus has primarily been on finding the optimal SFC path by considering parameters such as latency, bandwidth, energy efficiency, and reliability. However, there are opportunities for enhancement, particularly in optimizing resource allocation and management while maintaining service level agreements (SLAs) when determining the optimal SFC path for microservice placement. Additionally, automation of configuration generation can significantly aid the deployment process of microservices, and the integration of AI/ML techniques such as SARIMA for traffic behavior forecasting can enable dynamic adjustments to configuration parameters for improved adaptability.
+	
+	Existing literature spans a variety of approaches, targeting distinct challenges such as bandwidth management, infrastructure design, and algorithmic placement strategies for Virtual Network Functions (VNFs) in dynamic environments.
+	
+	Among these challenges, efficient bandwidth utilization has been extensively explored. R. Kawahara et al. proposed an adaptive bandwidth control mechanism to handle long-duration large flows while ensuring minimal impact on short-duration latency-sensitive traffic. Their approach dynamically adjusted bandwidth allocation based on observed traffic patterns, promoting fair resource distribution among competing flows. Expanding such adaptive methodologies within a comprehensive SFC placement strategy that considers multiple interconnected services could further improve overall network performance.
+	
+	In parallel, the underlying physical and virtual infrastructure, particularly data center topologies, plays a vital role in the performance of SFC placement. N. Kamiyama proposed an Analytic Hierarchy Process (AHP)-based model that evaluated various data center topologies on metrics such as cost, reliability, and performance. While useful in static scenarios, integrating this AHP model into real-time and dynamic environments could enhance its applicability for multi-generation network deployments.
+	
+	Moving forward, researchers have proposed a range of algorithmic models—spanning from centralized heuristics to distributed frameworks—for orchestrating service function chains. One of the early works on distributed SFC placement is presented by M. Ghaznavi et al., where the authors proposed a heuristic-based Distributed Service Function Chaining (DSFC) framework utilizing the Kariz algorithm. Their approach focused on reducing the dependency on centralized controllers by distributing SFC placement decisions across the network. While the method improved computational efficiency, incorporating predictive traffic forecasting could enhance its adaptability in dynamic environments.
+	
+	Building on these foundational methods, latency-aware and mobility-resilient placement has gained significant attention, especially for supporting ultra-low-latency services in mobile networks. A notable study by D. Harutyunyan et al. explored end-to-end (E2E) slice placement in 5G networks by modeling slice requests as Service Function Chains (SFCs) and solving a Mixed Integer Linear Programming (MILP) problem. Each network component was represented as a Virtual Network Function (VNF), and various placement strategies were compared in terms of resource utilization and quality of service (QoS) guarantees. To reduce VNF migrations and maintain latency and data rate requirements, a heuristic algorithm was also proposed. While effective in simulations, there remains ample scope to extend these methods for real-time, large-scale deployments by incorporating dynamic workload adaptation, hardware-aware placement, and mobility-resilient strategies.
+	
+	Extending this work, the authors also incorporated user mobility into the SFC placement model using a blend of MILP and heuristics to minimize handover disruptions and ensure service continuity. While these approaches effectively address latency and mobility, further improvements can be made by incorporating power efficiency considerations, leveraging peak-performance hardware, and introducing AI-driven methods. Techniques such as large language models (LLMs) for automated configuration generation and reinforcement learning for adaptive placement strategies present promising directions for enhancing scalability and adaptability in dynamic mobile environments.
+	
+	Beyond latency and mobility, energy efficiency has emerged as a pressing concern in the orchestration of future networks. A. Dalgkitsis et al. introduced SCHE2MA, a Service CHain Energy-Efficient MAnagement framework that leverages distributed reinforcement learning for zero-touch orchestration in multi-domain environments. SCHE2MA effectively reduces average service latency and energy consumption while supporting URLLC services. Although the use of AI/ML techniques like reinforcement learning demonstrates strong potential, there is still scope for further enhancement by incorporating power-optimized resource allocation and deploying peak-efficiency hardware. These additions could significantly improve both the sustainability and operational performance of future network systems.
+	
+	While each of these domains contributes critical insights to the broader problem of SFC placement, a unified framework that balances performance, scalability, energy efficiency, and automation is still an open research challenge.
+	
+	\subsection{Our Contribution}
+	
+	Our proposed LLM-assisted Constraint-Aware Pipeline (CAP) addresses these challenges by integrating a constraint-aware path selection mechanism with a resource-aware microservice allocator, enabling real-time, adaptive, and automated SFC deployment. Additionally, we incorporate SARIMA-based traffic forecasting to predict workload variations, ensuring proactive resource allocation. By leveraging LLMs for automated configuration generation, our approach reduces deployment overhead while optimizing microservice placement across multi-generation networks. This comprehensive framework offers a scalable, intelligent, and future-proof solution for efficient SFC placement in dynamic network environments.
+	
+	\section{References}
+	
+	\begin{thebibliography}{99}
+		
+		\bibitem{kawahara2009adaptive} 
+		R. Kawahara, T. Mori, N. Kamiyama, S. Harada, and H. Hasegawa,  
+		"Adaptive Bandwidth Control to Handle Long-Duration Large Flows,"  
+		IEEE ICC, 2009.
+		
+		\bibitem{kamiyama2010designing} 
+		N. Kamiyama,  
+		"Designing Data Center Networks using Analytic Hierarchy Process,"  
+		IEEE ICCCN, 2010.
+		
+		\bibitem{ghaznavi2017distributed} 
+		M. Ghaznavi, N. Shahriar, S. Kamali, R. Ahmed, and R. Boutaba,  
+		"Distributed Service Function Chaining,"  
+		IEEE Journal on Selected Areas in Communications, vol. 35, no. 11, pp. 2479–2492, Nov. 2017.
+		
+		\bibitem{harutyunyan2019orchestrating} 
+		D. Harutyunyan et al.,  
+		"Orchestrating End-to-End Slices in 5G Networks,"  
+		IEEE CNSM, 2019.
+		
+		\bibitem{latencyaware2019} 
+		D. Harutyunyan et al.,  
+		"Latency-Aware Service Function Chain Placement in 5G Mobile Networks Using ILP,"  
+		Conference/Journal, 2019.
+		
+		\bibitem{mobilityaware2020} 
+		D. Harutyunyan et al.,  
+		"Latency and Mobility–Aware Service Function Chain Placement in 5G Networks Using MILP and Heuristic Approach,"  
+		Conference/Journal, 2020.
+		
+		\bibitem{dalgkitsis2022sche2ma} 
+		A. Dalgkitsis et al.,  
+		"SCHE2MA: Scalable, Energy-Aware, Multi-Domain Orchestration for Beyond-5G URLLC Services,"  
+		IEEE Journal, 2022.
+		
+	\end{thebibliography}
+	
+\end{document}
