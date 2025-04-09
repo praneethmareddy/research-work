@@ -18,3 +18,21 @@ Together, these works provide strong foundations, but there is room to enhance r
 
 Let me know if you want it more technical or if I should directly integrate it into your LaTeX!
 
+Great question! To connect the first and second paragraphs like a story, we can add a bridging sentence at the end of the first paragraph that naturally leads into the specific research works mentioned in the second. Here’s how you can do it:
+
+
+---
+
+First paragraph (with bridge at the end):
+
+Service Function Chaining (SFC) placement is a fundamental research area in next-generation networks such as 5G and beyond. Achieving efficient placement involves addressing multiple factors including latency, bandwidth, energy consumption, reliability, resource utilization, and user mobility. While existing methods often focus on optimizing one or two of these metrics, comprehensive solutions that balance all aspects—particularly under dynamic network conditions—remain a challenge. Moreover, automation in deployment, configuration generation, and AI-driven traffic forecasting (e.g., using SARIMA) are increasingly necessary to meet real-time service demands and uphold service level agreements (SLAs). Several notable studies have approached these challenges from different angles, particularly focusing on how to maintain service performance across complex and evolving network environments.
+
+Second paragraph:
+
+One of the core challenges in this space is the orchestration of end-to-end (E2E) network slices...
+
+
+---
+
+The bridging sentence (in bold) acts like a "story handoff" — it wraps up the general idea and sets the stage for the specific research that follows. Let me know if you’d like variations or a full revision of the related work with this narrative structure throughout.
+
