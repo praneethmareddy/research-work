@@ -1,0 +1,20 @@
+Sure! Here's a simplified, crisp, and well-connected version of the related work section:
+
+
+---
+
+Service Function Chaining (SFC) placement is a key research area in next-generation networks like 5G and beyond. Most existing approaches aim to find optimal SFC paths based on latency, bandwidth, energy, and reliability. However, there is still scope for improving SLA-aware resource allocation, automating deployment configurations, and using AI/ML techniques like SARIMA for traffic prediction and adaptive reconfiguration.
+
+D. Harutyunyan et al. first proposed an end-to-end slice placement method in 5G networks using MILP to reduce bandwidth usage and VNF migrations while meeting QoS requirements. To enhance scalability, they also introduced heuristic methods.
+
+Building on this, their next work introduced a latency-aware placement model, focusing on minimizing end-to-end delay for delay-sensitive services through ILP optimization.
+
+Later, they extended this with a latency and mobility-aware approach, combining MILP and heuristics to handle user mobility while preserving QoS and minimizing handover disruptions.
+
+Together, these works provide strong foundations, but there is room to enhance real-time adaptability, energy efficiency, and automated decision-making using modern AI-driven methods.
+
+
+---
+
+Let me know if you want it more technical or if I should directly integrate it into your LaTeX!
+
