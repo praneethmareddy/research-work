@@ -1,0 +1,101 @@
+I am looking for IEEE GLOBECOM conference papers to cite in my research paper. Below is a summary of my research work and the specific topics I need references for:
+
+================================================================================
+RESEARCH PAPER SUMMARY
+================================================================================
+
+TITLE: OASIS: Orchestration of Adaptive SFC with Intelligent Sensing for Environment-Aware Multi-RAT Networks
+
+DOMAIN: 5G/6G Networks, Network Function Virtualization (NFV), Service Function Chaining (SFC), Multi-Radio Access Technology (Multi-RAT)
+
+CORE PROBLEM:
+Traditional cloud orchestration frameworks are static and focus only on resource availability. They fail to consider dynamic QoS requirements for different service flows, deployment constraints, and operator policies in heterogeneous Multi-RAT environments (4G, 5G, Wi-Fi coexistence).
+
+PROPOSED SOLUTION - OASIS FRAMEWORK:
+A plugin-based, extensible orchestration framework that uses:
+1. Graph Attention Network (GAT) for topology-aware node embeddings
+2. Deep Reinforcement Learning (DRL) with PPO for optimal CNF placement
+3. LSTM-based time-series forecasting for predictive vertical scaling
+4. Segment Routing (SRv6/SR-MPLS) for inter-NF transport
+
+KEY TECHNICAL CONTRIBUTIONS:
+- Three-dimensional orchestration model: (1) Multi-RAT SFC flows, (2) QoS/deployment constraints, (3) Operator policies
+- GAT-based infrastructure modeling with custom distance metrics for node compatibility
+- DRL agent with continuous action space for microservice placement
+- Delayed reward function incorporating QoS (PDB, PER), resource (CPU, memory), and energy constraints
+- QoS-aware traffic steering using Cloud-Native Load Balancer (CNLB)
+- LSTM-based traffic forecasting for adaptive vertical scaling
+
+KEY RESULTS:
+- 19.4% reduction in CPU usage
+- 35.25% reduction in memory usage
+- SLA compliance for QFI flows 2 (URLLC) and 79 (eMBB)
+- Reduced cluster peak utilization and energy consumption
+
+================================================================================
+SPECIFIC TOPICS I NEED GLOBECOM PAPERS FOR
+================================================================================
+
+TOPIC 1: Service Function Chaining (SFC) in SDN/NFV
+- SFC deployment and traffic steering
+- Graph Neural Networks for SFC
+- Deep Reinforcement Learning for SFC placement
+- Current reference to replace: ICTC 2020 paper on GNN for SFC
+
+TOPIC 2: Energy-Efficient VNF/CNF Placement
+- Energy-aware SFC placement in NFV networks
+- Green networking and energy optimization
+- Power consumption minimization in data centers
+- Current reference to replace: APNOMS 2021 paper on energy-efficient VNF
+
+TOPIC 3: Joint VNF Placement and Routing
+- Joint optimization of placement and routing
+- VNF placement with traffic engineering
+- Resource allocation in NFV environments
+- Current reference to replace: INFOCOM 2012 paper on VM placement
+
+TOPIC 4: Machine Learning for 5G Resource Allocation
+- ML-based resource management in 5G
+- AI-driven network orchestration
+- Intelligent resource allocation techniques
+- Current reference to replace: Journal paper on ML for 5G data centers
+
+TOPIC 5: Latency-Aware Orchestration for URLLC
+- Ultra-Reliable Low-Latency Communication services
+- Latency-aware SFC orchestration
+- QoS-guaranteed service placement
+- Current reference to replace: IEEE TITS paper on URLLC orchestration
+
+TOPIC 6: Kubernetes-Based SFC Deployment
+- Cloud-native SFC deployment
+- Container orchestration for network functions
+- Edge computing SFC placement
+- Current reference to replace: INFOCOM Workshop paper on Kubernetes SFC
+
+TOPIC 7: Traffic Forecasting for Mobile Networks
+- LSTM-based traffic prediction
+- Time-series forecasting for network optimization
+- Predictive scaling in telecom networks
+- Current reference to replace: INFOCOM 2024 paper on time series forecasting
+
+================================================================================
+SEARCH CONSTRAINTS
+================================================================================
+
+- Conference: IEEE GLOBECOM (Global Communications Conference) only
+- Year range: 2018-2024 preferred
+- Must be available on IEEE Xplore
+- Should have DOI for proper citation
+
+================================================================================
+OUTPUT FORMAT NEEDED
+================================================================================
+
+For each paper found, please provide:
+1. Full paper title
+2. Authors
+3. Conference name and year (GLOBECOM YYYY)
+4. Page numbers
+5. DOI number
+6. IEEE Xplore direct link
+7. Brief 2-3 sentence summary of relevance to my research
