@@ -1,0 +1,12 @@
+\section{Related Work}
+
+Service Function Chain (SFC) placement has been widely studied for joint function placement and routing. Early integer programming formulations under capacity and delay constraints provided optimal solutions for data center scenarios, but lack scalability for dynamic large-scale environments.
+
+With the emergence of edge--cloud deployments, recent works have explored DRL for adaptive SFC placement. Dalgkitsis \textit{et al.} \cite{drl-5g} proposed a DDPG-based approach for dynamic VNF placement in 5G networks targeting edge-cloud automation. Building on this, Dalgkitsis \textit{et al.} \cite{schema} proposed SCHEMA, a distributed RL algorithm for SFC orchestration achieving significant latency reduction. However, these approaches assume homogeneous infrastructures, limiting applicability to heterogeneous Multi-RAT scenarios.
+
+In 5G and distributed environments, Hantouti \textit{et al.} \cite{taleb_sfc_sym} proposed a symmetry-aware SFC framework enabling KPI-driven service chaining. Farhoudi \textit{et al.} \cite{taleb_drl} explored learning-based service composition using deep learning for dynamic orchestration. While these works incorporate service-level objectives, they do not address orchestration under heterogeneous infrastructure conditions with jointly enforced QoS constraints.
+
+Vrahatis \textit{et al.} \cite{vrahatis2024gat_review} and Khemani \textit{et al.} \cite{khemani2024gnn_review} studied GNNs, particularly GATs, for learning graph-structured representations. These models capture node and link heterogeneity suitable for network-aware decisions. However, their application to SFC placement in heterogeneous Multi-RAT environments remains limited.
+
+Kubernetes has become the de facto platform for deploying CNFs. Arouk and Nikaein \cite{arouk2020cloud} investigated Kubernetes-based automation for 5G cloud-native infrastructures. Singh \textit{et al.} \cite{singh2025pax} proposed PAX, a performance- and energy-aware scheduler, while Daimari \cite{adaimari2025energy_eval} evaluated energy characteristics of heuristic scheduling. Despite these advances, existing schedulers remain resource-centric and lack support for end-to-end SLA enforcement and SFC-aware orchestration.
+
