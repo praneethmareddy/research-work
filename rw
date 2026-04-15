@@ -10,3 +10,79 @@ Vrahatis \textit{et al.} \cite{vrahatis2024gat_review} and Khemani \textit{et al
 
 Kubernetes has become the de facto platform for deploying CNFs. Arouk and Nikaein \cite{arouk2020cloud} investigated Kubernetes-based automation for 5G cloud-native infrastructures. Singh \textit{et al.} \cite{singh2025pax} proposed PAX, a performance- and energy-aware scheduler, while Daimari \cite{adaimari2025energy_eval} evaluated energy characteristics of heuristic scheduling. Despite these advances, existing schedulers remain resource-centric and lack support for end-to-end SLA enforcement and SFC-aware orchestration.
 
+\begin{thebibliography}{99}
+	
+	
+	\bibitem{sfc}
+	R. Kang, J. Liu, Y. Zhang, and X. Wang, 
+	``Implementation of Service Function Chain Deployment with Allocation Models in Kubernetes,'' 
+	in \emph{IEEE INFOCOM Workshops}, 2022, pp. 1--2.
+	
+	\bibitem{verizon_vran}
+	Verizon, ``The value of virtualized architecture in high-density environments," 2023. Available: \url{https://www.verizon.com/about/news/value-virtualized-architecture-high-density-environments}.
+	
+	\bibitem{kube-scheduler}
+	Kubernetes Documentation, 
+	``Configure Multiple Schedulers,'' 
+	Available: \url{https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/}.
+	
+	\bibitem{drl-5g}
+	A. Dalgkitsis, P. -V. Mekikis, A. Antonopoulos, G. Kormentzas and C. Verikoukis, 
+	``Dynamic Resource Aware VNF Placement with Deep Reinforcement Learning for 5G Networks,'' 
+	in \emph{GLOBECOM 2020 - 2020 IEEE Global Communications Conference}, Taipei, Taiwan, 2020, pp. 1-6, doi: 10.1109/GLOBECOM42002.2020.9322512.
+	
+	\bibitem{schema}
+	A. Dalgkitsis, L. A. Garrido, P. -V. Mekikis, K. Ramantas, L. Alonso and C. Verikoukis, 
+	``SCHEMA: Service Chain Elastic Management with Distributed Reinforcement Learning,'' 
+	in \emph{2021 IEEE Global Communications Conference (GLOBECOM}, Madrid, Spain, 2021, pp. 01-06, doi: 10.1109/GLOBECOM46510.2021.9685162.
+	
+
+	\bibitem{taleb_sfc_sym}
+	Hantouti, H., Benamar, N., Bagaa, M. and Taleb, T.,
+	``Symmetry-aware SFC Framework for 5G Networks,''
+	in \emph{IEEE Network}, 2021, pp.234-241.
+	
+	\bibitem{taleb_drl}
+	M. Farhoudi, M. Shokrnezhad, S. Kianpisheh, and T. Taleb,
+	``Deep learning based service composition in integrated aerial-terrestrial networks,''
+	in \emph{Proc. IEEE 11th International Conference on Network Softwarization (NetSoft)}, 2025, pp. 204--208.
+	
+	\bibitem{vrahatis2024gat_review}
+	A. G. Vrahatis et al., 
+	``Graph Attention Networks: A Comprehensive Review,'' 
+	\emph{Future Internet}, vol. 16, no. 9, 2024.
+	
+	\bibitem{khemani2024gnn_review}
+	B. Khemani et al., 
+	``A Review of Graph Neural Networks: Concepts, Architectures, and Applications,'' 
+	\emph{Journal of Big Data}, 2024.
+	
+	\bibitem{arouk2020cloud}
+	O. Arouk and N. Nikaein, 
+	``5G Cloud-Native: Network Management and Automation,'' 
+	in \emph{Proc. IEEE/IFIP NOMS}, 2020.
+	
+	\bibitem{singh2025pax}
+	P. Singh et al., 
+	``PAX: Towards Performance and Energy-Aware Kubernetes Scheduling,'' 
+	in \emph{Proc. ACM HotCarbon Workshop}, 2025.
+	
+	\bibitem{adaimari2025energy_eval}
+	A. Daimari, 
+	``Energy Consumption of Heuristic Kubernetes Schedulers,'' 
+	Research Report, 2025.
+	
+	\bibitem{SR}
+	J. A. Singh et al., 
+	``Implementation of Segment Routing-Traffic Engineering over MPLS,'' 
+	in \emph{Proc. ICCCNT}, 2021.
+	
+	\bibitem{lena}
+	CTTC, 
+	``5G-LENA: The 5G NR Module for the ns-3 Simulator,'' 
+	Available: \url{https://5g-lena.cttc.es/}.
+	
+
+
+	
+\end{thebibliography}
