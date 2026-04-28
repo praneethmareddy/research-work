@@ -1,0 +1,530 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+%\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx,float}
+\usepackage{tcolorbox}
+
+\usepackage{textcomp}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{epstopdf}
+\usepackage{placeins}
+\usepackage{multicol}
+%\usepackage{flushend}
+\usepackage{multirow}
+\usepackage{relsize}
+\usepackage{diagbox}
+\usepackage{balance}
+%\usepackage{helvet} % Removed: Conflicts with IEEE Times font
+\usepackage{array}
+\usepackage{enumitem}
+% ADDED: Globally remove spacing from all lists
+\setlist{nosep, topsep=0pt, itemsep=0pt, partopsep=0pt, parsep=0pt} 
+%\usepackage{times} % Removed: IEEEtran handles this
+\usepackage{latexsym}
+%\usepackage[sort, numbers]{natbib} % Removed: Conflicts with \usepackage{cite}
+\usepackage{blindtext}
+\usepackage{url}
+
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+%\setlength{\columnsep}{0.25 in}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+		T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% --- COMPACTION COMMANDS ADDED ---
+\newcommand{\squeezeup}{\vspace{-2.5mm}}
+
+% Squeeze space around floats and captions
+\setlength{\textfloatsep}{10pt plus 1.0pt minus 2.0pt} % Space between float and text
+\setlength{\floatsep}{8pt plus 1.0pt minus 2.0pt}    % Space between two floats
+\setlength{\intextsep}{8pt plus 1.0pt minus 2.0pt}   % Space around in-text floats
+\setlength{\abovecaptionskip}{4pt plus 1pt minus 1pt} % Space above caption
+\setlength{\belowcaptionskip}{4pt plus 1pt minus 1pt} % Space below caption
+% --- END COMPACTION COMMANDS ---
+
+%\renewcommand{\algorithmname}{Pseudocode}
+
+\begin{document}
+	
+	\title{OASIS: Orchestration of Adaptive SFC with Intelligent Sensing for Environment-Aware Multi-RAT Networks}
+	
+	%\author{
+		%	\IEEEauthorblockN{}
+		%	\IEEEauthorblockA{
+			%}
+		\author{
+			\IEEEauthorblockN{Akash Dayalan, Karthikeyan Subramaniam, Sudhakar Balusamy, Senthilkumar Subramanian, \\Saritha Ramesh Thangaraju, Mohan Reddy Vemulapalli, and D V S Praneeth Mareddy}
+			\IEEEauthorblockA{Samsung R\&D Institute India-Bangalore\\
+				Email: \{akash.2, karthikeyan.s, sudhakar.b, s.senthil, saritha.rt, mohan.reddy, m.praneeth\}@samsung.com
+			}
+		}
+		
+		\maketitle
+		
+		
+		\begin{abstract}
+			The coexistence of heterogeneous Radio Access Technologies (RATs) in Next-Generation Networks (NGN) introduces significant challenges for Service Function Chain (SFC) orchestration across edge-cloud infrastructures. Efficient deployment of Cloud-Native Network Functions (CNFs) must satisfy resource constraints, end-to-end Service-Level Agreements (SLAs), and operator-defined objectives such as energy efficiency. However, conventional Kubernetes schedulers are resource-centric and lack topology and QoS awareness. We propose OASIS, a topology-aware orchestration framework for SLA-compliant SFC placement in Multi-RAT environments. OASIS models the infrastructure as a graph and employs a Graph Attention Network (GAT) to encode resource and link heterogeneity. A Deep Reinforcement Learning (DRL) agent leverages these embeddings to derive adaptive CNF placement policies that optimize SLA compliance, resource utilization, and energy consumption using topology-aware inputs derived through Segment Routing-based telemetry. Placement decisions are translated into Kubernetes scheduling primitives and integrated with QoS-aware path realization using Segment Routing. Simulation results demonstrate that OASIS reduces SLA violations by up to 90\% across evaluated traffic classes, while improving resource utilization by approximately 19\% and reducing energy consumption by 13\% compared to baseline scheduling strategies. These results highlight the effectiveness of topology-aware learning for scalable and efficient SFC orchestration in heterogeneous Multi-RAT deployments.
+		\end{abstract}
+		
+		\begin{IEEEkeywords}
+			
+			Service Function Chaining, Multi-RAT, Topology-Aware Orchestration, Deep Reinforcement Learning, Graph Neural Networks, Segment Routing
+			%	Orchestration, Environment-Aware, Operator Constraints, AI/ML, Datacenter networking
+		\end{IEEEkeywords}
+		
+		\begin{figure}[t!] 
+			\centering
+			\includegraphics[scale=0.62]{images/intro_fig_oasis_v2.png}
+			\caption{OASIS: A framework for CNF placement with resource, energy, QoS, and policy awareness}
+			\label{cap}
+		\end{figure}
+		
+		
+		
+		\section{Introduction}\label{intro}
+		
+		The evolution of wireless networks has led to the coexistence of multiple Radio Access Technologies (Multi-RAT), including legacy 4G, 5G Non-Standalone, 5G Standalone, and Wi-Fi systems. These heterogeneous RATs must be jointly orchestrated over shared edge-cloud infrastructures to support diverse service categories such as eMBB, URLLC, and massive IoT. This heterogeneity introduces significant challenges due to variations in latency, reliability, and traffic dynamics across access technologies. Consequently, orchestration decisions must account not only for compute resource availability but also for network conditions. In this context, topology awareness refers to incorporating both node-level resource states and link-level characteristics such as latency and reliability into orchestration decisions.
+		
+		Modern telecom cores are implemented as Cloud-Native Network Functions (CNFs) deployed over Kubernetes (K8s). Service delivery is realized through Service Function Chains (SFCs) \cite{sfc}, which define an ordered sequence of network functions (e.g., AMF, SMF, UPF) that traffic must traverse to meet service requirements. Each SFC is associated with Quality of Service (QoS) requirements and Service-Level Agreements (SLAs), typically expressed in terms of metrics such as Packet Delay Budget (PDB) and Packet Error Rate (PER). Orchestration in such environments involves determining CNF placement and routing decisions that jointly satisfy resource constraints and end-to-end QoS guarantees.
+		
+		In large-scale 5G vRAN deployments, operators deploy thousands of virtual Distributed Units (vDUs) across geographically distributed edge sites to meet stringent latency and capacity requirements. For instance, commercial 5G rollouts such as those by Verizon \cite{verizon_vran} involve dense edge deployments where each cell site or cluster requires localized compute for real-time processing. This results in a massive number of CNF instances being dynamically instantiated and scaled across the infrastructure. However, current orchestration mechanisms, primarily driven by resource-centric schedulers, fail to account for network topology and end-to-end QoS constraints. As a result, suboptimal placements lead to increased latency, inefficient resource utilization, and SLA violations, particularly for latency-sensitive services such as URLLC.
+		
+		In this work, we address the problem of coordinated CNF placement and SFC chaining path realization over a heterogeneous Multi-RAT infrastructure graph, such that end-to-end SLA constraints are satisfied while minimizing overall resource utilization and energy consumption under operator-defined policies. These policies may prioritize objectives such as peak resource efficiency (resource-aware operation) or reduced power consumption (energy-aware operation), depending on deployment requirements.
+		
+		Formally, the infrastructure is modeled as a graph where nodes represent compute resources with finite capacities and edges represent communication links with latency and reliability characteristics. Each SFC request imposes resource demands and QoS bounds (e.g., PDB and PER). The goal is to compute placement and path configurations satisfying these constraints while optimizing system efficiency. However, for an infrastructure with $|V|$ nodes and an SFC of length $k$, the number of possible placement configurations grows exponentially with $|V|^k$, further compounded by routing path combinations between consecutive functions. This makes exact optimization intractable for dynamic Multi-RAT environments.
+		
+		Existing works on DRL-based SFC orchestration primarily focus on homogeneous environments or optimize limited objectives such as latency or acceptance ratio. Furthermore, conventional Kubernetes schedulers \cite{kube-scheduler} are largely resource-centric and do not explicitly account for end-to-end QoS requirements or inter-function dependencies arising from SFC chaining, as shown in Fig.~\ref{cap}. This limitation motivates the need for an orchestration framework that jointly considers topology, QoS constraints, and operator objectives in heterogeneous Multi-RAT environments.
+		
+		To address this gap, we propose the OASIS framework (Orchestration of Adaptive SFC with Intelligent Sensing), a topology-aware orchestration framework for Multi-RAT networks. OASIS models the infrastructure as a dynamic graph and leverages a Graph Attention Network (GAT) to learn context-aware node embeddings that capture both resource states and link characteristics. These embeddings are utilized by a Deep Reinforcement Learning (DRL) agent to derive adaptive placement policies that satisfy SLA constraints while optimizing resource and energy objectives using topology-aware inputs derived through Segment Routing (SR)-based telemetry. This intelligent sensing capability is enabled through continuous telemetry collection from both CNFs and network devices, allowing OASIS to adapt to dynamic conditions.
+		
+		
+		Unlike conventional Kubernetes scheduling, where CNFs are placed based solely on local resource availability and paths are computed independently thereafter, OASIS performs globally coordinated placement by incorporating both node-level resource states and link-level QoS characteristics. This ensures that feasible end-to-end SLA-compliant paths exist between consecutively placed functions. As a result, OASIS avoids scenarios where locally optimal placements lead to globally infeasible SFC realizations.
+		
+		
+		The primary contributions of this work are as follows:
+		\begin{itemize}
+			\item A unified formulation of SLA-constrained SFC placement with QoS-aware path realization in heterogeneous Multi-RAT infrastructure graphs, incorporating both resource and energy considerations without combinatorial enumeration.
+			\item A topology-aware embedding mechanism based on Graph Attention Networks (GAT) to encode infrastructure state and link heterogeneity.
+			\item A DRL-based adaptive placement policy that jointly optimizes SLA compliance, resource utilization, and energy efficiency within a Kubernetes-based orchestration framework.
+		\end{itemize}
+		
+		%		The remainder of this paper is organized as follows. Section II presents related work, Section III describes the OASIS architecture, Section IV formulates the problem, Section V details the learning-based orchestration approach, and Section VI presents performance evaluation results.
+		
+		
+		\begin{figure*}[t!]
+			\centering
+			\includegraphics[scale=0.37]{images/control_flow_oasis_v3.png}
+			\caption{Control Flow for SFC Placement through OASIS framework}
+			\label{fig:overall-flow}
+		\end{figure*}
+		
+		
+		\section{Related Work}
+		
+		SFC placement has been widely studied for joint function placement and routing. Harutyunyan \textit{et al.} \cite{ilp2022} formulated the problem using Mixed Integer Linear Programming(MILP) under capacity and delay constraints for 5G networks with latency and mobility awareness. While optimal, such approaches lack scalability for dynamic large-scale environments.
+		
+		With the emergence of edge-cloud deployments, DRL has been explored for adaptive SFC placement. Dalgkitsis \textit{et al.} \cite{drl-5g} proposed a DDPG-based approach for dynamic VNF placement in 5G networks. Building on this, Dalgkitsis \textit{et al.} \cite{schema} proposed SCHEMA, a distributed RL algorithm for SFC orchestration achieving significant latency reduction. However, these approaches assume homogeneous infrastructures, limiting applicability to heterogeneous Multi-RAT scenarios.
+		
+		In 5G environments, Hantouti \textit{et al.} \cite{taleb_sfc_sym} proposed a symmetry-aware SFC framework enabling KPI-driven service chaining. Farhoudi \textit{et al.} \cite{taleb_drl} explored learning-based service composition using deep learning for dynamic orchestration. While these works incorporate service-level objectives, they do not address orchestration under heterogeneous infrastructure conditions with jointly enforced QoS constraints.
+		
+		Graph Neural Networks(GNN) have been increasingly applied to resource allocation in communication networks. He \textit{et al.} \cite{gnn-v2x} employed GNN with multi-agent RL for spectrum allocation in vehicular networks. Bouroudi \textit{et al.} \cite{gnn-6g} proposed a GNN-enhanced DRL framework using PPO for energy-efficient multi-domain 6G orchestration.While these works demonstrate GNN-based DRL effectiveness for resource optimization, they do not address SFC placement with globally optimal path selection that satisfies end-to-end SLA constraints in heterogeneous Multi-RAT environments.
+		
+		Kubernetes has become the de facto platform for deploying CNFs. Arouk and Nikaein \cite{kube5g} proposed Kube5G, a cloud-native 5G service platform for agile telco network function deployment. Han Dong \textit{et al.} \cite{singh2025pax} proposed PAX, a performance- and energy-aware scheduler, while Daimari \cite{adaimari2025energy_eval} evaluated energy characteristics of heuristic scheduling. Despite these advances, existing schedulers remain resource-centric and lack support for end-to-end SLA enforcement, energy-aware placement, and SFC-aware orchestration.
+		
+		
+		\section{Solution Approach}\label{SL}
+		
+		Fig.~\ref{fig:overall-flow} illustrates the overall control flow of the OASIS framework and its integration with Kubernetes-based orchestration. The system consists of four logical components: (i) an SFC Manager that defines chain structure and SLA requirements, (ii) a topology-aware embedding module based on GAT that encodes infrastructure state, (iii) DRL agent that determines CNF placement decisions, and (iv) a CNF Manager that translates placement decisions into Kubernetes scheduling primitives for deployment. 
+		
+		The DRL agent outputs a mapping of each CNF in the SFC to a selected infrastructure node. Based on these placement decisions, the Path Computation Engine (PCE) computes QoS-compliant paths between consecutive CNFs using SR, ensuring that end-to-end SLA constraints can be satisfied. These paths are then enforced in the network through the SDN controller. Thus, OASIS focuses on generating placement decisions that are globally consistent with SLA feasibility, while path realization is handled by the underlying transport control mechanisms.
+		
+		
+		\subsection{Problem Formulation}
+		
+		We model the infrastructure as a graph $G(V, E)$, where $V$ represents compute nodes and $E$ represents communication links. Each node $v \in V$ has finite CPU capacity $C_v^{cpu}$ and memory capacity $C_v^{mem}$, while each link $(i,j) \in E$ is characterized by latency $L_{ij}$ and packet loss probability $P_{ij}$.
+		
+		Each SFC is defined as an ordered sequence of functions or microservices:
+		\begin{equation}
+			\text{SFC} = (f_1, f_2, \dots, f_k)
+			\label{eq:sfc_chain}
+		\end{equation}
+		where each function $f_i$ has associated CPU and memory demands. The objective is to map each function $f_i$ to a node in $V$ while satisfying resource and QoS requirements.
+		
+		\subsubsection{Resource and Energy Model}
+		
+		The normalized resource utilization of a node $v$ is defined as:
+		\begin{equation}
+			\tilde{U}_{resource,v} =
+			\frac{1}{2}
+			\left(
+			\frac{CPU_v}{C_v^{cpu}} + \frac{MEM_v}{C_v^{mem}}
+			\right)
+			\label{eq:resource_model}
+		\end{equation}
+		where $CPU_v$ and $MEM_v$ denote the allocated CPU and memory usage at node $v$, respectively.
+		
+		Energy consumption is modeled as a function of resource utilization:
+		\begin{equation}
+			\tilde{U}_{energy,v} = f(\tilde{U}_{resource,v})
+			\label{eq:energy_model}
+		\end{equation}
+		
+		\subsubsection{QoS Model}
+		
+		For each pair of consecutively placed functions $(f_i, f_{i+1})$, QoS is evaluated over the selected path between their hosting nodes. The end-to-end latency and PER are computed as:
+		\begin{equation}
+			L_{\text{path}} = \sum_{(i,j) \in \text{path}} L_{ij}, \quad
+			P_{\text{path}} = 1 - \prod_{(i,j) \in \text{path}} (1 - P_{ij})
+			\label{eq:lpathandppath}
+		\end{equation}
+		
+		These must satisfy the SLA constraints:
+		\begin{equation}
+			L_{\text{path}} \le L_{th}, \quad
+			P_{\text{path}} \le P_{th}
+			\label{eq:qos_model}
+		\end{equation}
+		
+		where $L_{th}$ and $P_{th}$ denote the maximum allowable end-to-end latency and packet error rate defined by the SLA.
+		
+		
+		QoS constraints are treated as mandatory requirements and must be satisfied for all SFCs. These constraints are not part of operator-defined policies.
+		
+		\subsubsection{Optimization Objective and Policy Context}
+		
+		The objective is to minimize overall resource and energy utilization:
+		\begin{equation}
+			\min \sum_{v \in V} \left( \tilde{U}_{resource,v} + \tilde{U}_{energy,v} \right)
+			\label{eq:optimization_obj}
+		\end{equation}
+		
+		subject to:
+		\begin{itemize}
+			\item Resource capacity constraints at each node
+			\item SLA constraints on PDB and PER for each SFC
+		\end{itemize}
+		
+		In this formulation, QoS requirements are enforced as hard constraints to ensure SLA-compliant service delivery, while resource and energy terms constitute optimization objectives.
+		
+		Operator-defined policies influence the relative importance of these objectives. For instance, a resource-aware policy prioritizes minimizing peak resource utilization, whereas an energy-aware policy emphasizes reducing overall energy consumption. QoS compliance remains mandatory and is not treated as a tunable policy objective.
+		
+		The placement problem grows exponentially with the number of nodes and SFC length, with a complexity on the order of $O(|V|^k)$ for an SFC of length $k$. This renders exact optimization intractable for real-time orchestration in dynamic environments. Therefore, we adopt a learning-based approach to approximate the optimal placement policy. The above formulation provides the foundation for state representation, feature construction, and reward design in the proposed solution.
+		
+		
+		\subsection{Operational Flow}
+		
+		Fig.~\ref{fig:overall-flow} illustrates the OASIS workflow comprising SFC plan generation and runtime enforcement. These processes are logically distinct but operate in a coordinated and overlapping manner within the system.
+		
+		Service requirements and operator policies, conveyed through the Service Management and Orchestration (SMO) framework and Service Communication Proxy (SCO), are translated into SFC definitions and SLA constraints. The SFC Manager defines the chain ordering and SLA context. These are provided to OASIS, which computes an SFC placement plan by mapping each CNF to an infrastructure node. The CNF Manager handles these deployment-related inputs.
+		
+		Based on the placement decisions, the PCE determines QoS-compliant paths between consecutive CNFs using SR, ensuring that end-to-end SLA constraints can be satisfied. These paths are then installed in the network via the SDN controller, enabling consistent traffic steering across the deployed SFC.
+		
+		Both placement and path decisions are associated with a common SFC identifier, ensuring consistent enforcement across orchestration components. Placement decisions are enforced through Kubernetes by the CNF Manager, while QoS-aware paths are enforced through the SDN-controlled transport network.
+		
+		At runtime, traffic is classified (e.g., using QoS Flow Indicator (QFI)) and mapped to the corresponding SFC. The SFC Manager maintains this mapping along with chain ordering and SLA context. Traffic is then steered through the deployed CNF instances along the pre-computed SR paths. Additionally, operator policy changes from SMO dynamically adjust reward weighting and trigger periodic policy updates, enabling adaptive behavior without retraining from scratch.
+		
+		The framework incorporates a closed-loop feedback mechanism for adaptive optimization. Service-level feedback follows the path: CNFs $\rightarrow$ CNF Manager $\rightarrow$ SFC Manager $\rightarrow$ OASIS. Network-level feedback follows: network devices $\rightarrow$ telemetry agents $\rightarrow$ telemetry collector $\rightarrow$ topology database $\rightarrow$ OASIS. These feedback paths remain logically decoupled, while link characteristics such as latency and packet loss are derived through SR-based telemetry and network monitoring.
+		
+		
+		\subsection{Topology-Aware Embedding through GAT}
+		
+		To encode topology and resource state, we employ GAT.
+		
+		Node features:
+		\[
+		h_v = [\text{CPU utilization}, \text{Memory utilization}]
+		\]
+		
+		Energy is not explicitly included as a feature, as it is derived from CPU utilization in the system model.
+		
+		Edge features:
+		\[
+		e_{ij} = [L_{ij}, P_{ij}]
+		\]
+		where $e_{ij}$ encodes latency and packet loss between nodes $i$ and $j$.
+		
+		These features are derived from the infrastructure model defined in the problem formulation, where node utilization and link characteristics correspond to the variables used in resource, energy, and QoS modeling as shown in Equations \ref{eq:resource_model}, \ref{eq:energy_model}, \ref{eq:qos_model}.
+		
+		Attention coefficients are computed as:
+		\begin{equation}
+			\alpha_{ij} =
+			\text{SoftMax}(
+			\text{LeakyReLU}(a^T [W h_i \parallel e_{ij} \parallel W h_j])
+			)
+		\end{equation}
+		where $W$ is a learnable weight matrix, $a$ is the attention vector, and $\parallel$ denotes concatenation.
+		
+		We define a topology-aware distance metric:
+		
+		\begin{equation}
+			d_{ij} =
+			\beta_1 \tilde{L}_{ij}
+			+ \beta_2 \tilde{P}_{ij}
+			+ \beta_3 (\tilde{U}_{resource,i} + \tilde{U}_{resource,j})
+		\end{equation}
+		
+		where $\tilde{L}_{ij}$ and $\tilde{P}_{ij}$ denote normalized latency and packet loss obtained by scaling with respect to observed network bounds, and $\tilde{U}_{resource}$ denotes normalized resource utilization as defined in the problem formulation.
+		
+		GAT loss function:
+		
+		\begin{equation}
+			\mathcal{L}_{emb} =
+			\sum_{(i,j)\in\mathcal{N}}
+			\left( \|h_i - h_j\|^2 - d_{ij} \right)^2
+		\end{equation}
+		where $\mathcal{L}_{emb}$ encourages embeddings to capture topology-aware compatibility based on QoS and resource conditions. The GAT produces a fixed-dimensional embedding vector $z_v \in \mathbb{R}^d$ for each node, capturing its topology-aware state. Embeddings are pre-trained offline and frozen during policy learning to stabilize training.
+		
+		\subsection{DRL-Based SFC Placement}
+		
+		Placement is performed sequentially for each function in the SFC.
+		
+		State:
+		\begin{itemize}
+			\item GAT embeddings (captures current state of network topology)
+			\item Partial SFC placement state
+			\item Microservice resource requirements
+			\item QoS bounds
+		\end{itemize}
+		
+		The state representation encodes variables from the problem formulation, including resource capacities, QoS bounds, and partial placement decisions.
+		
+		Action:
+		The policy outputs a continuous vector $a_t \in \mathbb{R}^d$, where $d$ is the embedding dimension.
+		
+		Node selection:
+		\begin{equation}
+			v^* =
+			\arg\max_{v \in V}
+			\frac{a_t \cdot z_v}{\|a_t\|\|z_v\|}
+		\end{equation}
+		where $z_v$ is the embedding of node $v$, and cosine similarity is used for node selection.
+		
+		The DRL agent outputs a mapping of each CNF in the SFC to an infrastructure node, forming the placement plan. This formulation avoids combinatorial enumeration of node assignments while maintaining scalability across varying infrastructure sizes.
+		
+		\subsection{Reward Design}
+		
+		The reward function reflects SLA constraint satisfaction and resource-energy optimization, consistent with the problem formulation. Latency and packet error rate capture QoS constraints, while resource and energy terms correspond to optimization objectives.
+		
+		For each metric $m$, a normalized value $\tilde{m}$ is computed with respect to its corresponding threshold. The reward component is defined as:
+		
+		\begin{equation}
+			R(m) =
+			\begin{cases}
+				10(1-\tilde{m}) & \tilde{m} \le 1 \\
+				-10(\tilde{m}-1) & \tilde{m} > 1
+			\end{cases}
+		\end{equation}
+		
+		The total reward is given by:
+		\begin{equation}
+			R_{\text{total}} =
+			R(\tilde{L}) +
+			R(\tilde{P}) +
+			R(\tilde{U}_{resource}) +
+			R(\tilde{U}_{energy})
+			\label{eq:total_reward}
+		\end{equation}
+		
+		where $R(\tilde{L})$ and $R(\tilde{P})$ enforce SLA constraint satisfaction, and $R(\tilde{U}_{resource})$ and $R(\tilde{U}_{energy})$ drive resource and energy optimization.
+		
+		Reward is computed after full SFC placement to reflect end-to-end SLA compliance across both placement and subsequent path realization. This ensures that placement decisions favor configurations where QoS-compliant paths are feasible.
+		
+		Operator-defined policies (e.g., energy-efficient or performance-oriented modes) influence the relative importance of reward components, enabling adaptive optimization without changes to the underlying model. These policies are incorporated through dynamic weighting of reward components during training.
+		
+		
+		\subsection{Training Configuration}
+		
+		The GAT embedding model is pre-trained offline using the GAT loss function and subsequently frozen during policy learning to stabilize convergence and decouple representation learning from policy optimization.
+		
+		The DRL agent uses Proximal Policy Optimization (PPO) with policy and value networks of two 256-unit layers (ReLU). The embedding dimension is set to $d=256$, chosen as a balance between representation capacity and computational overhead.
+		
+		Training is performed for 5000 episodes with a batch size of 64 transitions per update. The learning rate is set to $3\times10^{-4}$, discount factor $\gamma = 0.99$, and PPO clipping parameter $\epsilon = 0.2$. Rewards are normalized per episode to reduce variance and stabilize gradient updates.
+		
+		%All models are trained using stochastic mini-batch updates on GPU acceleration until convergence of average episode reward.
+		
+		\subsection{Deployment Translation in Kubernetes}
+		
+		Selected nodes are translated into Kubernetes constraints: Node selectors, Affinity rules, and Tolerations.
+		
+		These are embedded into Helm templates by the CNF Manager and applied through Kubernetes APIs, ensuring deployment on selected nodes.
+		A Cloud-Native Load Balancer (CNLB) is used for traffic classification and SFC mapping based on QoS identifiers.
+		
+		\subsection{QoS-Aware Flow Steering}
+		
+		To enforce SLA compliance at runtime, a CNLB operates as an L7 proxy between access nodes (e.g., gNB) and control plane CNFs.
+		
+		CNLB extracts QFI from incoming traffic and maps it to a corresponding SFC identifier maintained by the SFC Manager. Each QFI is deterministically steered through its SFC.
+		
+		\subsection{Segment Routing-Based Transport}
+		
+		Inter-CNF transport is realized using SR, where pre-computed SR paths are installed between consecutive CNFs in the chain. Topology-aware placement biases node selection toward configurations where QoS-compliant paths are feasible, improving the effectiveness of subsequent PCE-based path realization. Paths are selected to satisfy end-to-end latency constraints derived from SFC QoS requirements. If link metrics deviate, topology updates adjust subsequent placements.
+		
+		
+		\section{Experiment Setup and Performance Evaluation}\label{setup}
+		
+		We evaluate OASIS in terms of SLA compliance, resource efficiency, energy consumption, and training stability.
+		
+		\subsection{Experimental Environment}
+		
+		The infrastructure is modeled as a heterogeneous cluster of 50 interconnected compute nodes represented as a graph $G(V,E)$. Node capacities vary between 8-32 CPU cores and 16-128 GB memory. Link latencies range from 1-15 ms with packet loss probabilities between $10^{-5}$ and $10^{-3}$, derived using network telemetry and SR-based measurements.
+		
+		5G core functions (AMF, SMF, UPF, CNLB) are deployed as containerized CNFs over Kubernetes. The ns-3 5G-LENA \cite{lena} module generates traffic flows corresponding to URLLC and eMBB QFI classes. Each SFC request consists of an ordered AMF-SMF-UPF chain with realistic resource demands.
+		
+		Traffic workloads are generated following Poisson session arrivals with varying QFI distributions to emulate heterogeneous service demands across URLLC and eMBB flows. SLA constraints are enforced according to PDB and PER thresholds.
+		
+		\subsection{Baselines}
+		
+		OASIS is compared against:
+		
+		\begin{itemize}
+			\item Kubernetes Default Scheduler
+			\item Greedy Resource Heuristic
+			\item Shortest-Path Heuristic
+		\end{itemize}
+		
+		These baselines represent resource-centric and heuristic approaches without topology-aware learning or coordinated placement and path realization.
+		
+		
+		
+		\subsection{Results and Analysis}
+		
+		Results are averaged over 10 runs; metrics include SLA violations, resource utilization, energy consumption, and training convergence. All utilization and energy metrics are normalized between 0 and 1.
+		
+		\textbf{SLA Compliance:}
+		Fig.~\ref{fig:sla_violation} shows that OASIS achieves near-zero SLA violations for both URLLC and eMBB traffic. For QFI-2, violations reduce from 8.7\% (Kubernetes) to 0.8\%, a $\sim$90\% improvement; similar trends hold for QFI-79.
+		
+		\textbf{Resource Distribution:}
+		Fig.~\ref{fig:resource_utilization} shows that OASIS achieves the lowest utilization ($U_{resource}=0.68$) compared to Kubernetes ($0.84$) and heuristics, improving efficiency by $\sim$19\% through topology-aware placement and reduced hotspots.
+		
+		\textbf{Energy Efficiency:}
+		Fig.~\ref{fig:energy_consumption} shows that OASIS reduces energy consumption to $U_{energy}=0.72$ versus $0.83$ for Kubernetes, yielding $\sim$13\% savings.
+		
+		\textbf{Training Stability:}
+		Fig.~\ref{fig:ppo_convergence} shows PPO convergence after $\sim$3500-4000 episodes.
+		
+		\textbf{Scalability:}
+		Placement complexity is $O(k|V|)$, as each decision evaluates node embeddings linearly. This remains tractable for edge-cloud deployments, with negligible inference latency.
+		
+		
+		
+		\begin{figure}[t!]
+			\centering
+			\includegraphics[scale=0.42]{graphs/sla_violation_oasis.eps}
+			\caption{SLA violation comparison across scheduling strategies}
+			\label{fig:sla_violation}
+		\end{figure}
+		
+		\begin{figure}[t!]
+			\centering
+			\includegraphics[scale=0.42]{graphs/resource_utilization_oasis.eps}
+			\caption{Average normalized resource utilization under different placement strategies}
+			\label{fig:resource_utilization}
+		\end{figure}
+		
+		\begin{figure}[t!]
+			\centering
+			\includegraphics[scale=0.42]{graphs/energy_consumption_oasis.eps}
+			\caption{Aggregate normalized energy consumption across scheduling strategies}
+			\label{fig:energy_consumption}
+		\end{figure}
+		
+		\begin{figure}[t!]
+			\centering
+			\includegraphics[scale=0.42]{graphs/ppo_training_oasis.eps}
+			\caption{Training convergence of PPO-based placement policy}
+			\label{fig:ppo_convergence}
+		\end{figure}
+		
+		
+		\section{Conclusion}
+		
+		This paper presented OASIS, a topology-aware orchestration framework for SLA-constrained SFC placement in heterogeneous Multi-RAT environments. By integrating graph-based representations with learning-driven decision making and QoS-aware path realization via SR, OASIS enables efficient and scalable orchestration under complex infrastructure constraints. The framework leverages telemetry-driven topology awareness and operator objectives for adaptive SFC orchestration. Overall, OASIS demonstrates the effectiveness of combining topology-aware learning with cloud-native orchestration and SR-based transport mechanisms for next-generation Multi-RAT networks.
+		
+		\balance 
+		
+		\footnotesize
+		
+		\begin{thebibliography}{99}
+			
+			\bibitem{sfc}
+			R. Kang, J. Liu, Y. Zhang, and X. Wang, 
+			``Implementation of Service Function Chain Deployment with Allocation Models in Kubernetes,'' 
+			in \emph{IEEE INFOCOM Workshops}, 2022, pp. 1--2.
+			
+			\bibitem{verizon_vran}
+			Verizon, ``The value of virtualized architecture in high-density environments," 2023. Available: \url{https://www.verizon.com/about/news/value-virtualized-architecture-high-density-environments}.
+			
+			\bibitem{kube-scheduler}
+			Kubernetes Documentation, 
+			``Configure Multiple Schedulers,'' 
+			Available:\url{https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/}.
+			
+			\bibitem{ilp2022}
+			D. Harutyunyan, N. Shahriar, R. Boutaba and R. Riggio, 
+			``Latency and Mobility–Aware Service Function Chain Placement in 5G Networks,'' 
+			in \emph{IEEE Transactions on Mobile Computing}, vol. 21, no. 5, pp. 1697-1709, 1 May 2022.
+			
+			\bibitem{drl-5g}
+			A. Dalgkitsis, P. -V. Mekikis, A. Antonopoulos, G. Kormentzas and C. Verikoukis, 
+			``Dynamic Resource Aware VNF Placement with Deep Reinforcement Learning for 5G Networks,'' 
+			in \emph{GLOBECOM 2020}, Taipei, Taiwan, 2020, pp. 1-6.
+			
+			\bibitem{schema}
+			A. Dalgkitsis, L. A. Garrido, P. -V. Mekikis, K. Ramantas, L. Alonso and C. Verikoukis, 
+			``SCHEMA: Service Chain Elastic Management with Distributed Reinforcement Learning,'' 
+			in \emph{GLOBECOM 2021}, Madrid, Spain, 2021, pp. 01-06.
+			
+			\bibitem{taleb_sfc_sym}
+			Hantouti, H., Benamar, N., Bagaa, M. and Taleb, T.,
+			``Symmetry-aware SFC Framework for 5G Networks,''
+			in \emph{IEEE Network}, 2021, pp. 234-241.
+			
+			\bibitem{taleb_drl}
+			M. Farhoudi, M. Shokrnezhad, S. Kianpisheh, and T. Taleb,
+			``Deep learning based service composition in integrated aerial-terrestrial networks,''
+			in \emph{Proc. IEEE 11th International Conference on Network Softwarization (NetSoft)}, 2025, pp. 204--208.
+			
+			\bibitem{gnn-v2x}
+			Z. He, L. Wang, H. Ye, G. Y. Li and B. -H. F. Juang, 
+			``Resource Allocation based on Graph Neural Networks in Vehicular Communications,'' 
+			in \emph{GLOBECOM 2020}, Taipei, Taiwan, 2020, pp. 1-5.
+			
+			\bibitem{gnn-6g}
+			A. Bouroudi, A. Outtagarts and Y. Hadjadj-Aoul, 
+			``GNN-Based Multi-Agent DRL for Energy-Efficient Multi-Domain 6G Resource Orchestration,'' 
+			in \emph{GLOBECOM 2025}, Taipei, Taiwan, 2025, pp. 4457-4462.
+			
+			\bibitem{kube5g}
+			O. Arouk and N. Nikaein, 
+			``Kube5G: A Cloud-Native 5G Service Platform,'' 
+			in \emph{GLOBECOM 2020 - 2020 IEEE Global Communications Conference}, Taipei, Taiwan, 2020, pp. 1-6.
+			
+			\bibitem{singh2025pax}
+			Han Dong, Parul Singh, Yara Awad, Felix George, Krishnasuri Narayanam, Sanjay Arora, and Jonathan Appavoo. 2025. Towards Performance and Energy Aware Kubernetes Scheduler. SIGENERGY Energy Inform. Rev. 5, 2 (July 2025), 69–75. 
+			
+			\bibitem{adaimari2025energy_eval}
+			Daimari, A., Jansen, M. and Bonetta, D., Energy Consumption of Heuristic Kubernetes Schedulers, 2025.
+			
+			\bibitem{SR}
+			J. Abhishek Singh, M. R. Sachin Kumar and K. S. Shushrutha, "Implementation of Segment Routing-Traffic Engineering over MPLS," 2021 12th International Conference on Computing Communication and Networking Technologies (ICCCNT), Kharagpur, India, 2021, pp. 1-5.
+			\bibitem{lena}
+			CTTC, 
+			``5G-LENA: The 5G NR Module for the ns-3 Simulator,'' 
+			Available: \url{https://5g-lena.cttc.es/}.
+			
+		\end{thebibliography}
+		
+		
+		
+	\end{document}
