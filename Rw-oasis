@@ -1,0 +1,169 @@
+\section{Related Work}
+
+SFC placement has been widely studied for joint function placement 
+and routing. Harutyunyan \textit{et al.} \cite{ilp2022} formulated 
+the problem using Mixed Integer Linear Programming (MILP) under 
+capacity and delay constraints for 5G networks with latency and 
+mobility awareness. Zhang \textit{et al.} \cite{zhang2024sfc_par} 
+extended this direction by proposing a robust deployment model for 
+parallelized SFCs against traffic uncertainty, formulating the 
+problem as a mixed integer second-order cone program with VNF 
+sharing to minimize deployment cost. While such optimization-based 
+approaches capture structural deployment constraints, they lack 
+scalability for dynamic large-scale environments.
+
+With the emergence of edge-cloud deployments, DRL has been explored 
+for adaptive SFC placement. Dalgkitsis \textit{et al.} \cite{drl-5g} 
+proposed a DDPG-based approach for dynamic VNF placement in 5G 
+networks. Building on this, Dalgkitsis \textit{et al.} \cite{schema} 
+proposed SCHEMA, a distributed RL algorithm for SFC orchestration 
+achieving significant latency reduction. However, these approaches 
+assume homogeneous infrastructures, limiting applicability to 
+heterogeneous Multi-RAT scenarios.
+
+In 5G environments, Hantouti \textit{et al.} \cite{taleb_sfc_sym} 
+proposed a symmetry-aware SFC framework enabling KPI-driven service 
+chaining. Farhoudi \textit{et al.} \cite{taleb_drl} explored 
+learning-based service composition using deep learning for dynamic 
+orchestration in aerial-terrestrial networks. While these works 
+incorporate service-level objectives, they do not address 
+orchestration under heterogeneous infrastructure conditions with 
+jointly enforced QoS constraints.
+
+Graph Neural Networks (GNN) have been increasingly applied to 
+resource allocation in communication networks. He \textit{et al.} 
+\cite{gnn-v2x} employed GNN with multi-agent RL for spectrum 
+allocation in vehicular networks. Bouroudi \textit{et al.} 
+\cite{gnn-6g} proposed a GNN-enhanced DRL framework using PPO for 
+energy-efficient multi-domain 6G orchestration. While these works 
+demonstrate GNN-based DRL effectiveness for resource optimization, 
+they do not address SFC placement with globally optimal path 
+selection that satisfies end-to-end SLA constraints in heterogeneous 
+Multi-RAT environments.
+
+Kubernetes has become the de facto platform for deploying CNFs. 
+Arouk and Nikaein \cite{kube5g} proposed Kube5G, a cloud-native 
+5G service platform for agile telco network function deployment. 
+Han Dong \textit{et al.} \cite{singh2025pax} proposed PAX, a 
+performance- and energy-aware scheduler. Tsegaye \textit{et al.} 
+\cite{tsegaye2025sdn} proposed a cloud-edge microservices 
+architecture integrating SDN, KubeEdge, and Kubernetes DaemonSets 
+for real-time medical asset tracking and adaptive telemetry 
+enforcement, demonstrating the effectiveness of closed-loop 
+edge-AI within Kubernetes environments. The management of SFC 
+state consistency during migrations in such programmable 
+infrastructures has been experimentally characterized by Yamada 
+\textit{et al.} \cite{yamada2025sfc_pdp}, who showed that 
+aggregated controller designs can reduce SFC migration time by 76\% 
+by eliminating state conversion overhead. Despite these advances, 
+existing schedulers remain resource-centric and lack support for 
+end-to-end SLA enforcement, energy-aware placement, and SFC-aware 
+orchestration.
+\begin{thebibliography}{99}
+
+\bibitem{verizon_vran}
+Verizon, ``The value of virtualized architecture in 
+high-density environments,'' 2023. Available: 
+\url{https://www.verizon.com/about/news/value-virtualized-architecture-high-density-environments}.
+
+\bibitem{kube-scheduler}
+Kubernetes Documentation, 
+``Configure Multiple Schedulers,'' 
+Available: \url{https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/}.
+
+\bibitem{ilp2022}
+D. Harutyunyan, N. Shahriar, R. Boutaba, and R. Riggio, 
+``Latency and Mobility-Aware Service Function Chain Placement 
+  in 5G Networks,'' 
+\emph{IEEE Transactions on Mobile Computing}, 
+vol. 21, no. 5, pp. 1697--1709, May 2022.
+
+% ── SWAP 1: replaces \cite{sfc} (INFOCOM Workshops 2022) ──
+\bibitem{zhang2024sfc_par}
+C. Zhang, T. Sato, and E. Oki,
+``Deployment Model for Parallelized Service Function Chains 
+  Against Traffic Uncertainty,''
+in \emph{Proc. IEEE International Conference on 
+  Communications (ICC)}, Denver, CO, USA, 2024, pp. 153--158,
+doi: 10.1109/ICC51166.2024.10622911.
+
+\bibitem{drl-5g}
+A. Dalgkitsis, P.-V. Mekikis, A. Antonopoulos, 
+G. Kormentzas, and C. Verikoukis, 
+``Dynamic Resource Aware VNF Placement with Deep 
+  Reinforcement Learning for 5G Networks,'' 
+in \emph{Proc. IEEE Global Communications Conference 
+  (GLOBECOM)}, Taipei, Taiwan, 2020, pp. 1--6.
+
+\bibitem{schema}
+A. Dalgkitsis, L. A. Garrido, P.-V. Mekikis, K. Ramantas, 
+L. Alonso, and C. Verikoukis, 
+``SCHEMA: Service Chain Elastic Management with Distributed 
+  Reinforcement Learning,'' 
+in \emph{Proc. IEEE Global Communications Conference 
+  (GLOBECOM)}, Madrid, Spain, 2021, pp. 1--6.
+
+\bibitem{taleb_sfc_sym}
+H. Hantouti, N. Benamar, M. Bagaa, and T. Taleb,
+``Symmetry-aware SFC Framework for 5G Networks,''
+\emph{IEEE Network}, 2021, pp. 234--241.
+
+\bibitem{taleb_drl}
+M. Farhoudi, M. Shokrnezhad, S. Kianpisheh, and T. Taleb,
+``Deep Learning Based Service Composition in Integrated 
+  Aerial-Terrestrial Networks,''
+in \emph{Proc. IEEE 11th International Conference on 
+  Network Softwarization (NetSoft)}, 2025, pp. 204--208.
+
+\bibitem{gnn-v2x}
+Z. He, L. Wang, H. Ye, G. Y. Li, and B.-H. F. Juang, 
+``Resource Allocation Based on Graph Neural Networks in 
+  Vehicular Communications,'' 
+in \emph{Proc. IEEE Global Communications Conference 
+  (GLOBECOM)}, Taipei, Taiwan, 2020, pp. 1--5.
+
+\bibitem{gnn-6g}
+A. Bouroudi, A. Outtagarts, and Y. Hadjadj-Aoul, 
+``GNN-Based Multi-Agent DRL for Energy-Efficient 
+  Multi-Domain 6G Resource Orchestration,'' 
+in \emph{Proc. IEEE Global Communications Conference 
+  (GLOBECOM)}, Taipei, Taiwan, 2025, pp. 4457--4462.
+
+\bibitem{kube5g}
+O. Arouk and N. Nikaein, 
+``Kube5G: A Cloud-Native 5G Service Platform,'' 
+in \emph{Proc. IEEE Global Communications Conference 
+  (GLOBECOM)}, Taipei, Taiwan, 2020, pp. 1--6.
+
+\bibitem{singh2025pax}
+H. Dong, P. Singh, Y. Awad, F. George, K. Narayanam, 
+S. Arora, and J. Appavoo, 
+``Towards Performance and Energy Aware Kubernetes Scheduler,''
+\emph{SIGENERGY Energy Inform. Rev.}, 
+vol. 5, no. 2, pp. 69--75, Jul. 2025.
+
+% ── SWAP 2: replaces \cite{adaimari2025energy_eval} (preprint) ──
+\bibitem{tsegaye2025sdn}
+H. B. Tsegaye, P. M. Tshakwanda, M. Devetsikiotis, 
+and P. Spachos,
+``A Cloud-Edge Microservices Architecture for Smart Healthcare: 
+  SDN-Based Medical Asset Management,''
+in \emph{Proc. IEEE Medical Measurements \& Applications 
+  (MeMeA)}, Chania, Greece, 2025, pp. 1--6,
+doi: 10.1109/MeMeA65319.2025.11067988.
+
+% ── SWAP 3: replaces \cite{SR} (ICCCNT 2021) ──
+\bibitem{yamada2025sfc_pdp}
+T. Yamada, Y. Nishimi, T. Sato, and E. Oki,
+``Experimental Analysis of Migration Time for Service 
+  Function Chain with Programmable Data Plane,''
+in \emph{Proc. IEEE Global Communications Conference 
+  (GLOBECOM)}, Taipei, Taiwan, 2025, pp. 5320--5325,
+doi: 10.1109/GLOBECOM59602.2025.11432170.
+
+\bibitem{lena}
+CTTC, 
+``5G-LENA: The 5G NR Module for the ns-3 Simulator,'' 
+Available: \url{https://5g-lena.cttc.es/}.
+
+\end{thebibliography}
